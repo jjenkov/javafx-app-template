@@ -22,6 +22,7 @@ public class Plugin2 implements IPlugin {
 
         publisher.publish("Plugin 2 produced config event");
 
+        comBus.getEventBus().getOrCreateEventChannel("config").publish("Plugin 2 produced a 2nd config event");
 
         ServiceChannel service = comBus.getServiceBus().getOrCreateServiceChannel("service");
 
