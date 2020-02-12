@@ -2,15 +2,15 @@ package com.jenkov.javafxapp.bus;
 
 import java.util.function.Function;
 
-public class ServiceChannel {
+public class ServiceChannel<RQT, RST>{
 
-    private Function service = null;
+    private Function<RQT, RST> service = null;
 
-    public void setService(Function service) {
+    public void setService(Function<RQT, RST> service) {
         this.service = service;
     }
 
-    public Object callService(Object request){
+    public RST callService(RQT request){
         return this.service.apply(request);
     }
 
