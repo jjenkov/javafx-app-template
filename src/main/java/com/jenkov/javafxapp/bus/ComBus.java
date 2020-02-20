@@ -14,5 +14,14 @@ public class ComBus {
     }
 
 
+    public void publish(Object eventChannelId, Object event) {
+        getEventBus().getOrCreateEventChannel(eventChannelId).publish(event);
+    }
+
+    public <RQT, RST> RST call(Object serviceChannelId, RQT request, RST response){
+        ServiceChannel<RQT, RST> serviceChannel = getServiceBus().getOrCreateServiceChannel(serviceChannelId);
+        return serviceChannel.callService(request, response);
+    }
+
 
 }

@@ -29,7 +29,7 @@ public class Plugin1 implements IPlugin {
 
 
         ServiceChannel<String, String> service = comBus.getServiceBus().getOrCreateServiceChannel("service");
-        service.setService((text) -> {
+        service.setService((text, response) -> {
             System.out.println("Service called with: " + text);
             return "Thanks!";
         });

@@ -4,6 +4,7 @@ import com.jenkov.javafxapp.bus.ComBus;
 import com.jenkov.javafxapp.plugins.PluginManager;
 import com.jenkov.javafxapp.plugins.plugin1.Plugin1;
 import com.jenkov.javafxapp.plugins.plugin2.Plugin2;
+import com.jenkov.javafxapp.plugins.topmenu.TopMenuPlugin;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,6 +23,7 @@ public class Main extends Application {
 
         PluginManager pluginManager = new PluginManager();
 
+        pluginManager.addPlugin(new TopMenuPlugin());
         pluginManager.addPlugin(new Plugin1());
         pluginManager.addPlugin(new Plugin2());
 
@@ -30,9 +32,17 @@ public class Main extends Application {
 
         VBox root = new VBox(new Label("Hello World, JavaFX"));
 
+        Scene scene = new Scene(root, 300, 275);
+
+        comBus.getEventBus().getOrCreateEventChannel("app/stage/created").publish(primaryStage);
+        comBus.getEventBus().getOrCreateEventChannel("app/scene/created").publish(scene);
+        comBus.getEventBus().getOrCreateEventChannel("app/view/created").publish(root);
+
         primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setScene(scene);
         primaryStage.show();
+
+        comBus.getEventBus().getOrCreateEventChannel("app/stage/shown").publish(primaryStage);
     }
 
 

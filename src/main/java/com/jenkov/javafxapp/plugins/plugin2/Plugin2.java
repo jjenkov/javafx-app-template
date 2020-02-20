@@ -4,6 +4,8 @@ import com.jenkov.javafxapp.bus.ComBus;
 import com.jenkov.javafxapp.bus.EventPublisher;
 import com.jenkov.javafxapp.bus.ServiceChannel;
 import com.jenkov.javafxapp.plugins.IPlugin;
+import com.jenkov.javafxapp.plugins.topmenu.AddMenuItemRequest;
+import com.jenkov.javafxapp.plugins.topmenu.AddMenuItemResponse;
 
 public class Plugin2 implements IPlugin {
     protected ComBus comBus = null;
@@ -24,11 +26,29 @@ public class Plugin2 implements IPlugin {
 
         comBus.getEventBus().getOrCreateEventChannel("config").publish("Plugin 2 produced a 2nd config event");
 
-        ServiceChannel service = comBus.getServiceBus().getOrCreateServiceChannel("service");
+        ServiceChannel<String, String> service = comBus.getServiceBus().getOrCreateServiceChannel("service");
 
-        Object o = service.callService("Hey, what's up?");
+        String o = service.callService("Hey, what's up?", (String) null);
 
         System.out.println("Service replied: " + o);
+
+        comBus.getEventBus().getOrCreateEventChannel("app/menu/menu1").registerSubscriber().onEvent((message) -> {
+            System.out.println("Menu item selected: " + message);
+        });
+
+        ServiceChannel<AddMenuItemRequest, AddMenuItemResponse> menuService =
+                comBus.getServiceBus().getOrCreateServiceChannel("app/topMenu");
+
+        AddMenuItemRequest addMenuItemRequest = new AddMenuItemRequest();
+        addMenuItemRequest.menu                   = "Plugin 2";
+        addMenuItemRequest.menuItemText           = "Click on Menu Item for Plugin 2";
+        addMenuItemRequest.menuItemEventChannelId = "plugin 2";
+
+        AddMenuItemResponse response = menuService.callService(addMenuItemRequest, new AddMenuItemResponse());
+
+        comBus.getEventBus().getOrCreateEventChannel("plugin 2").registerSubscriber().onEvent((event) -> {
+            System.out.println("Plugin 2 menu item chosen: " + event);
+        });
 
 
     }
